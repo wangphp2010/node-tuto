@@ -1,0 +1,2 @@
+指令 
+	开启服务器 node server.js
