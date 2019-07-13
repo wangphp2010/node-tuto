@@ -3,6 +3,13 @@ Node.js
 ==========
 
 
+git remote add origin https://github.com/wangphp2010/nodeJS-tuto.git
+
+git push -u origin master
+
+
+
+
 ## 概要
 
 NodeJS 是一个javascript运行环境(runtime),有Ryan Dahl开发,实质是对Chrome V8进行了封装
