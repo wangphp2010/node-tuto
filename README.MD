@@ -397,11 +397,11 @@ server.listen(config.port, config.hostname, () => {
   });
 
 
-function showForm(pposts,res)
+function showForm(posts,res)
 {
     var data = ejs.render(template,{
         title:"hello ejs",
-        posts:pposts
+        posts:posts
     });
     res.setHeader('Content-Type','text/html'); 
     res.statusCode = 200 ;
@@ -537,5 +537,78 @@ MongoClient.connect(url, function(err,client){
   
 });
 
+
+```
+
+
+## Promise 
+
+* nodeJS 回调
+* promise 承诺
+
+### 回调地狱(指可读性地狱)
+Node.js是非阻塞编程.那么在编码过程中会遇到许多的回调函数(callback).如果多个处理的回调函数嵌套在一起的话,就会形成回调地狱,虽然对于程序的结果并没有任何影响,但是对于程序代码的可读性来说就是个地狱.
+
+exCallback.js
+
+ ```javascript
+
+ //回调地狱 示例
+
+ function dbupd(sql,done){
+   setTimeout(()=>done(sql+" update ok "),1000 ) ;
+ }
+ dbupd('1.sql',result=>{
+   console.log(result);
+   dbupd("2.sql",result=>{
+     console.log(result);
+      dbupd("3.sql",result=>{
+        console.log(result);
+
+      })
+
+   })
+
+
+ })
+
+ ```
+
+### 用Promise解决
+
+exPromise.js
+
+```javascript
+// async = 非同步
+function dbupAsync(sql){
+  const p = new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      console.log(sql + " update ok .");
+      resolve(sql + " .ok");//成功调用的方法,需要const result1 = await dbupAsync("1.sql") ; 来接收
+
+
+
+    },1000);
+  });
+  return p ; 
+}
+
+// dbupAsync 的返回值是p 而p 是new Promose来的 所以才能用then方法
+ dbupAsync("2.sql")
+  .then(()=> dbupAsync("2.sql"))
+  .then(()=> dbupAsync("3.sql"));
+
+
+
+//  更加简洁   async/await
+
+async function upAllDB(){
+  const result1 = await dbupAsync("1.sql") ;
+  const result2 = await dbupAsync("2.sql") ;
+  const result3 = await dbupAsync("3.sql") ;
+  console.log( result1,result2,result3)
+}
+
+upAllDB();
 
 ```
